@@ -9,4 +9,9 @@
 *.ear
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+/rxjava-remote.iml
+/.idea
+/project/project
+/project/target
+/target
 hs_err_pid*
