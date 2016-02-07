@@ -14,16 +14,14 @@
  *    limitations under the License.
  */
 
-apply plugin: 'java'
+package rxjava.remote;
 
-repositories {
-    mavenCentral()
-}
+import rx.Observable;
 
-dependencies {
-    compile group: "org.slf4j", name: "slf4j-api", version: "1.+"
-    compile group: "de.ruedigermoeller", name: "kontraktor", version: "3.17"
-    compile group: "de.ruedigermoeller", name: "kontraktor-reactive-streams", version: "3.17"
-    compile group: "io.reactivex", name: "rxjava", version: "1.+"
-    compile group: "io.reactivex", name: "rxjava-reactive-streams", version: "1.+"
+public interface ObservableInterface<T, R> {
+
+    Observable<R> get();
+
+    void send(Observable<T> observable);
+
 }
