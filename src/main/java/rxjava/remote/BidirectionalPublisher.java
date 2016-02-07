@@ -16,12 +16,12 @@
 
 package rxjava.remote;
 
-import rx.Observable;
+import org.reactivestreams.Publisher;
 
-public interface ObservableInterface<T, R> {
+public interface BidirectionalPublisher<T, R> {
 
-    Observable<R> get();
+    Publisher<R> get(Class<R> type);
 
-    void send(Observable<T> observable);
+    void send(Publisher<T> publisher);
 
 }

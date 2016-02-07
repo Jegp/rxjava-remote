@@ -16,33 +16,24 @@
 
 package rxjava.remote;
 
-import org.nustaq.kontraktor.Actor;
-import org.nustaq.kontraktor.reactivestreams.KxPublisher;
-import org.nustaq.kontraktor.reactivestreams.KxReactiveStreams;
-import org.nustaq.kontraktor.remoting.tcp.TCPConnectable;
-import org.nustaq.kontraktor.remoting.tcp.TCPNIOPublisher;
 import org.nustaq.kontraktor.util.RateMeasure;
 import org.reactivestreams.Publisher;
 import rx.Observable;
 import rx.RxReactiveStreams;
+import rx.Subscriber;
 
 public class Main {
 
     public static void main(String[] args) throws InterruptedException {
-        Observable<Integer> range = Observable.range(0, 1_000_000);
-        Publisher<Integer> pub = RxReactiveStreams.toPublisher(range);
+        BidirectionalPublisherImpl<String, Integer> bidirectionalPublisher1 = new BidirectionalPublisherImpl<>(7777, 8888);
+        BidirectionalPublisherImpl<Integer, String> bidirectionalPublisher2 = new BidirectionalPublisherImpl<>(8888, 7777);
 
-        KxReactiveStreams.get().asKxPublisher(pub)
-                .serve(new TCPNIOPublisher().port(7777));
+        Publisher<Integer> intPublisher = RxReactiveStreams.toPublisher(Observable.range(0, 1_000_000));
 
+        bidirectionalPublisher2.send(intPublisher);
         RateMeasure rm = new RateMeasure("events");
 
-        KxPublisher<Integer> remoteStream =
-                KxReactiveStreams.get()
-                        .connect(Integer.class, new TCPConnectable().port(7777).actorClass(Actor.class));
-
-        RxReactiveStreams.toObservable(remoteStream)
-                .forEach(i -> rm.count());
+        RxReactiveStreams.toObservable(bidirectionalPublisher1.get(Integer.class)).forEach(i -> rm.count());
     }
 
 }
